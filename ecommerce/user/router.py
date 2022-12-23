@@ -5,10 +5,11 @@ from . import schema
 from . import services
 from . import validator
 
-router = APIRouter(tags=['Users'], prefix='/users')
+router = APIRouter(tags=['Users'], prefix='/user')
 
+@router.post('/', status_code=status.HTTP_201_CREATED)
 async def create_user_registration(request: schema.User, database: Session = Depends(db.get_db)):
-    user = await validator.veryfy_user(request.email, database)
+    user = await validator.verify_email_exist(request.email, database)
 
     if user:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='Email already registered')
