@@ -6,6 +6,7 @@ from ecommerce.db import Base
 from ecommerce.products.models import Product
 from ecommerce.user.models import User
 
+
 class Cart(Base):
     __tablename__ = "cart"
 
@@ -14,6 +15,7 @@ class Cart(Base):
     cart_items = relationship("CartItems", back_populates="cart")
     user_cart = relationship("User", back_populates="cart")
     created_date = Column(DateTime, default=datetime.now)
+
 
 class CartItems(Base):
     __tablename__ = "cart_items"

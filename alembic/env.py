@@ -18,6 +18,7 @@ from ecommerce.db import Base
 from ecommerce.user.models import User
 from ecommerce.products.models import Product, Category
 from ecommerce.cart.models import Cart, CartItems
+from ecommerce.orders.models import Order, OrderDetail
 
 
 # add your model's MetaData object here
@@ -30,6 +31,7 @@ target_metadata = Base.metadata
 # can be acquired:
 # my_important_option = config.get_main_option("my_important_option")
 # ... etc.
+
 
 def get_url():
     DATABASE_USERNAME = config_env.DATABASE_USERNAME
@@ -74,7 +76,7 @@ def run_migrations_online():
     """
 
     configuration = config.get_section(config.config_ini_section)
-    configuration['sqlalchemy.url'] = get_url()
+    configuration["sqlalchemy.url"] = get_url()
     connectable = engine_from_config(
         configuration,
         prefix="sqlalchemy.",
@@ -82,9 +84,7 @@ def run_migrations_online():
     )
 
     with connectable.connect() as connection:
-        context.configure(
-            connection=connection, target_metadata=target_metadata
-        )
+        context.configure(connection=connection, target_metadata=target_metadata)
 
         with context.begin_transaction():
             context.run_migrations()

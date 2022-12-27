@@ -1,9 +1,11 @@
 from pydantic import BaseModel, constr
 from typing import Optional
 
+
 class Category(BaseModel):
     id: int
     name: constr(min_length=2, max_length=50)
+
 
 class ListCategory(BaseModel):
     id: int
@@ -23,6 +25,7 @@ class ProductBase(BaseModel):
 
     class Config:
         orm_mode = True
+
 
 class Product(ProductBase):
     category_id: int
