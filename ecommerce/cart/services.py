@@ -41,3 +41,10 @@ async def get_all_cart_items(database: Session) -> schema.ShowCart:
     user_info = database.query(User).filter(User.email == "user1@example.com").first()
     cart_info = database.query(Cart).filter(Cart.user_id == user_info.id).first()
     return cart_info
+
+async def remove_cart_item_by_id(cart_item_id: int, database: Session):
+    user_info = database.query(User).filter(User.email == "user1@example.com").first()
+    cart = database.query(Cart).filter(Cart.user_id == user_info.id).first()
+    database.query(CartItems).filter(CartItems.id == cart_item_id, CartItems.cart_id == cart.id).delete()
+    database.commit()
+    return
