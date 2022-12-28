@@ -39,3 +39,5 @@ uvloop==0.17.0
 watchfiles==0.18.1
 websockets==10.4
 celery==5.2.0
+redis==4.0.2
+boto3==1.21.32

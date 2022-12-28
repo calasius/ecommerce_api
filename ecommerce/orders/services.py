@@ -3,6 +3,7 @@ from typing import List
 from ecommerce.cart.models import Cart, CartItems
 from ecommerce.orders.models import Order, OrderDetail
 from ecommerce.user.models import User
+from . import tasks
 
 
 async def initiate_order(database) -> Order:
@@ -20,7 +21,9 @@ async def initiate_order(database) -> Order:
         total_amount += item.products.price
 
     new_order = Order(
-        order_amount=total_amount, shipping_address="123, ABC Street, XYZ City, 123456"
+        order_amount=total_amount,
+        shipping_address="123, ABC Street, XYZ City, 123456",
+        customer_id=user_info.id,
     )
 
     database.add(new_order)
@@ -31,7 +34,7 @@ async def initiate_order(database) -> Order:
 
     for item in cart_items_objects:
         new_order_details = OrderDetail(
-            order_id=new_order.id, product_id=item.products.id, customer_id=user_info.id
+            order_id=new_order.id, product_id=item.products.id
         )
         bulk_order_details_objects.append(new_order_details)
 
@@ -39,7 +42,7 @@ async def initiate_order(database) -> Order:
     database.commit()
 
     # Send email to the user
-    # TODO: implement this functionality
+    tasks.send_email.delay("calasius@vomoto.com")
 
     database.query(CartItems).filter(CartItems.cart_id == cart.id).delete()
     database.commit()
