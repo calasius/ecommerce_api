@@ -17,7 +17,7 @@ async def add_items(
     database.refresh(cart_items)
 
 
-async def add_to_cart(product_id: int, database: Session):
+async def add_to_cart(product_id: int, database: Session, current_user):
     product_info = database.query(Product).get(product_id)
     if product_info is None:
         raise HTTPException(
@@ -29,7 +29,7 @@ async def add_to_cart(product_id: int, database: Session):
             status_code=status.HTTP_400_BAD_REQUEST, detail="Item out of stock"
         )
 
-    user_info = database.query(User).filter(User.email == "user1@example.com").first()
+    user_info = database.query(User).filter(User.email == current_user.email).first()
 
     cart_info = database.query(Cart).filter(Cart.user_id == user_info.id).first()
 
@@ -45,14 +45,14 @@ async def add_to_cart(product_id: int, database: Session):
     return {"status": "Item added to cart"}
 
 
-async def get_all_cart_items(database: Session) -> schema.ShowCart:
-    user_info = database.query(User).filter(User.email == "user1@example.com").first()
+async def get_all_cart_items(database: Session, current_user) -> schema.ShowCart:
+    user_info = database.query(User).filter(User.email == current_user.email).first()
     cart_info = database.query(Cart).filter(Cart.user_id == user_info.id).first()
     return cart_info
 
 
-async def remove_cart_item_by_id(cart_item_id: int, database: Session):
-    user_info = database.query(User).filter(User.email == "user1@example.com").first()
+async def remove_cart_item_by_id(cart_item_id: int, database: Session, current_user):
+    user_info = database.query(User).filter(User.email == current_user.email).first()
     cart = database.query(Cart).filter(Cart.user_id == user_info.id).first()
     database.query(CartItems).filter(
         CartItems.id == cart_item_id, CartItems.cart_id == cart.id
