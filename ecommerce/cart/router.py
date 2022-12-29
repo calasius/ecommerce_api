@@ -14,7 +14,7 @@ router = APIRouter(
 )
 
 
-@router.post("/add", status_code=status.HTTP_201_CREATED)
+@router.get("/add", status_code=status.HTTP_201_CREATED)
 async def add_product_to_cart(
     product_id: int,
     database: Session = Depends(db.get_db),
