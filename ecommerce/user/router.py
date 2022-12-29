@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, status, HTTPException
 from sqlalchemy.orm import Session
 from typing import List
+from ecommerce.auth.jwt import get_current_user
 from ecommerce import db
 from . import schema
 from . import services
@@ -25,15 +26,26 @@ async def create_user_registration(
 
 
 @router.get("/", response_model=List[schema.DisplayUser])
-async def get_all_users(database: Session = Depends(db.get_db)):
+async def get_all_users(
+    database: Session = Depends(db.get_db),
+    current_user: schema.User = Depends(get_current_user),
+):
     return await services.all_users(database)
 
 
 @router.get("/{id}", response_model=schema.DisplayUser)
-async def get_user_by_id(id: int, database: Session = Depends(db.get_db)):
+async def get_user_by_id(
+    id: int,
+    database: Session = Depends(db.get_db),
+    current_user: schema.User = Depends(get_current_user),
+):
     return await services.get_user_by_id(id, database)
 
 
 @router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_user_by_id(id: int, database: Session = Depends(db.get_db)):
+async def delete_user_by_id(
+    id: int,
+    database: Session = Depends(db.get_db),
+    current_user: schema.User = Depends(get_current_user),
+):
     return await services.delete_user_by_id(id, database)
